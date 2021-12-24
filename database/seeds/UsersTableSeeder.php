@@ -21,6 +21,15 @@ class UsersTableSeeder extends Seeder
             'password' => Hash::make('Dhtvtyysq92')
         ]);
 
+
+        User::create([
+            'name' => 'Brave',
+            'last_name' => 'LQ',
+            'patronymic' => 'Shodievich',
+            'email' => 'brave@brave.com',
+            'password' => Hash::make('12345678')
+        ]);
+
         User::create([
             'name' => 'Nekruz',
             'last_name' => 'Dastambuev',
