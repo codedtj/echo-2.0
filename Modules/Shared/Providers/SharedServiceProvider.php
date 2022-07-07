@@ -3,7 +3,6 @@
 namespace Modules\Shared\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Factory;
 
 class SharedServiceProvider extends ServiceProvider
 {
@@ -17,7 +16,6 @@ class SharedServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
-        $this->registerFactories();
         $this->loadMigrationsFrom(module_path('Shared', 'Database/Migrations'));
     }
 
@@ -79,18 +77,6 @@ class SharedServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($langPath, 'shared');
         } else {
             $this->loadTranslationsFrom(module_path('Shared', 'Resources/lang'), 'shared');
-        }
-    }
-
-    /**
-     * Register an additional directory of factories.
-     *
-     * @return void
-     */
-    public function registerFactories()
-    {
-        if (! app()->environment('production') && $this->app->runningInConsole()) {
-            app(Factory::class)->load(module_path('Shared', 'Database/factories'));
         }
     }
 

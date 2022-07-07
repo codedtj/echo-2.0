@@ -3,7 +3,6 @@
 namespace Modules\Media\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Factory;
 
 class MediaServiceProvider extends ServiceProvider
 {
@@ -17,7 +16,6 @@ class MediaServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
-        $this->registerFactories();
         $this->loadMigrationsFrom(module_path('Media', 'Database/Migrations'));
     }
 
@@ -79,18 +77,6 @@ class MediaServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($langPath, 'media');
         } else {
             $this->loadTranslationsFrom(module_path('Media', 'Resources/lang'), 'media');
-        }
-    }
-
-    /**
-     * Register an additional directory of factories.
-     *
-     * @return void
-     */
-    public function registerFactories()
-    {
-        if (! app()->environment('production') && $this->app->runningInConsole()) {
-            app(Factory::class)->load(module_path('Media', 'Database/factories'));
         }
     }
 

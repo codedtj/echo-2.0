@@ -3,7 +3,6 @@
 namespace Modules\Counters\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Factory;
 
 class CountersServiceProvider extends ServiceProvider
 {
@@ -17,7 +16,6 @@ class CountersServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
-        $this->registerFactories();
         $this->loadMigrationsFrom(module_path('Counters', 'Database/Migrations'));
     }
 
@@ -79,18 +77,6 @@ class CountersServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($langPath, 'counters');
         } else {
             $this->loadTranslationsFrom(module_path('Counters', 'Resources/lang'), 'counters');
-        }
-    }
-
-    /**
-     * Register an additional directory of factories.
-     *
-     * @return void
-     */
-    public function registerFactories()
-    {
-        if (! app()->environment('production') && $this->app->runningInConsole()) {
-            app(Factory::class)->load(module_path('Counters', 'Database/factories'));
         }
     }
 
