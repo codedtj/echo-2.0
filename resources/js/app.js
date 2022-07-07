@@ -1,67 +1,34 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-import {store} from './store';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import VueObserveVisibility from 'vue-observe-visibility'
-import VueSocialSharing from 'vue-social-sharing'
+import './bootstrap';
+import '../css/app.css';
 
-require('./bootstrap');
-require('./yandex-audio');
+import {createApp, h} from 'vue';
+import {createInertiaApp} from '@inertiajs/inertia-vue3';
+import {InertiaProgress} from '@inertiajs/progress';
+import {resolvePageComponent} from 'laravel-vite-plugin/inertia-helpers';
+import {ZiggyVue} from '../../vendor/tightenco/ziggy/dist/vue.m';
+import PublicAppLayout from "./Pages/Public/PublicAppLayout.vue";
 
-// let App = require('./app/App.vue').default;
-let router = require('./app/Routes.vue').default;
+const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
-let BootstrapVue = require('bootstrap-vue').default;
-let VueRouter = require('vue-router').default;
-let VueLuxon = require('vue-luxon');
-import {DateTime} from 'luxon';
+createInertiaApp({
+    title: (title) => `${title} - ${appName}`,
+    resolve: (name) => {
+        const page = resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue'));
+        let layout = PublicAppLayout;
 
-window.Vue = require('vue');
-window.Vue.use(BootstrapVue);
-window.Vue.use(VueRouter);
-window.Vue.use(VueObserveVisibility);
-Vue.use(VueSocialSharing);
-window.Vue.use(VueLuxon
-    ,{
-    serverZone: 'utc',
-    // serverFormat: 'sql',
-    clientZone: DateTime.local().zoneName,
-    clientFormat: 'locale',
-    localeLang: null,
-    localeFormat: {},
-    diffForHumans: {},
-    i18n: {}
-}
-);
+        //change for admin pages
+        page.then((module) => {
+            module.default.layout = module.default.layout || layout;
+        });
 
-// window.Vue.prototype.$eventHub = new Vue();
-
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-Vue.component('EntryPoint', require('./app/EntryPoint.vue').default);
-Vue.component('SuggestionInput', require('./components/common/inputs/SuggestionInput.vue').default);
-Vue.component('font-awesome-icon', FontAwesomeIcon)
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-window.app = new Vue({
-    el: '#app',
-    router,
-    store
-    // render: h => h(App)
+        return page;
+    },
+    setup({el, app, props, plugin}) {
+        return createApp({render: () => h(app, props)})
+            .use(plugin)
+            .use(ZiggyVue, Ziggy)
+            .mount(el);
+    },
 });
+
+InertiaProgress.init({color: '#4B5563'});
